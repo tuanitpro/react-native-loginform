@@ -36,19 +36,11 @@ export default class LoginPage extends Component {
       password: '',
     };
   }
-  componentWillMount() {
-       var access_token = null;
-                  try {
-                       access_token=       AsyncStorage.getItem(STORAGE_KEY);
-                            } catch (error) {
-                              console.log('AsyncStorage error: ' + error.message);
-                            }
+componentWillMount() {
+ 
 
-                            if(access_token !=null){
-   var { navigate } = this.props.navigation;
-      navigate('MainPage');
+                           
 }
-    }
   _onPressLogin (event) {
       let serviceUrl =  BASE_URL + "/oauth2/token";
       let userName = this.state.userName;
@@ -72,17 +64,18 @@ export default class LoginPage extends Component {
         })
           .then((response) => response.json())
           .then((responseJSON) => {  
-               
+                
  var { navigate } = this.props.navigation;
                access_token = responseJSON.access_token; 
                if(access_token !=undefined){
                           try {
-                              AsyncStorage.setItem(STORAGE_KEY, access_token);
+                              AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(responseJSON));
+                                navigate('MainPage');
                             } catch (error) {
                               console.log('AsyncStorage error: ' + error.message);
                             }
 
-                  navigate('MainPage');
+                 
                }
                else{
                   Alert.alert('Login failure');

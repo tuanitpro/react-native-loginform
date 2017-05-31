@@ -25,16 +25,16 @@ class SplashPage extends Component {
 
   componentWillMount() {
     var pageUrl='LoginPage';
-    var access_token = null;
-                  try {
-                       access_token=       AsyncStorage.getItem(STORAGE_KEY);
-                            } catch (error) {
-                              console.log('AsyncStorage error: ' + error.message);
-                            }
-
-                            console.log(access_token);
-if(access_token !=null){
-  pageUrl='MainPage';
+     
+      try { 
+  AsyncStorage.getItem(STORAGE_KEY).then((user_data_json) => {
+  let userData = JSON.parse(user_data_json);
+  if(userData.access_token !=undefined){      
+              pageUrl = 'MainPage';
+      }                        
+});
+} catch (error) {
+    console.log('AsyncStorage error: ' + error.message);
 }
 
    var { navigate } = this.props.navigation;
