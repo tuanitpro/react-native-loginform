@@ -21,6 +21,7 @@ import {
  import SignUpPage from './SignUpPage.js';
 
 
+
 const MyApp = StackNavigator({
   SplashPage: { screen: SplashPage },
   MainPage: { screen: MainPage },

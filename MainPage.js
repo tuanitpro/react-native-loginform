@@ -20,6 +20,7 @@ import {
 export default class MainPage extends Component {
    static navigationOptions = {
     title: 'Welcome',
+    header:null,
   };
  render() {
     return (

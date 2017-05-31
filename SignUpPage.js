@@ -17,12 +17,13 @@ import {
   TouchableHighlight,
   Image,
   AsyncStorage,
+  ToastAndroid,
 } from 'react-native';
 import {
   StackNavigator,
 } from 'react-navigation';
 
-
+const BASE_URL = "http://ec2-52-27-149-161.us-west-2.compute.amazonaws.com";
 const background = require('./background.png') ;
 const lockIcon = require('./ic_lock.png');
 const userIcon = require('./ic_user.png');
@@ -33,29 +34,29 @@ export default class SignUpPage extends Component {
   
     this.state = {
       userName: '',
-      phoneNumber: '',
+      password: '',
+      confirmPassword: '',
     };
   }
   componentWillMount() {
         console.log("componentWillMount");
     }
   _onPressLogin (event) {
-    let token_url =  "http://ec2-52-27-149-161.us-west-2.compute.amazonaws.com/api/account/registerv2";
+     let serviceUrl = BASE_URL+  "/api/account/register";
       let userName = this.state.userName;
-      let phoneNumber = this.state.phoneNumber;
-      // kiem tra o day
-
-
-        fetch(token_url,{
-          method: "POST",
-          
+      let password = this.state.password;
+      let confirmPassword = this.state.confirmPassword;
+      // kiem tra o day  
+    fetch(serviceUrl,{
+        method: "POST",          
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
       body: JSON.stringify({
         'username': userName,
-        'phonenumber': phoneNumber,
+        'password': password,
+        'confirmPassword':confirmPassword
       })
 
 
@@ -63,10 +64,11 @@ export default class SignUpPage extends Component {
         })
           .then((response) => response.json())
           .then((responseJSON) => {  
-               
-
-               
-               Alert.alert('Hello !' + userName + ' ' );
+                if(responseJSON.message=="Success"){
+                     var { navigate } = this.props.navigation;
+                     navigate('LoginPage');
+                    ToastAndroid.show(responseJSON.message, ToastAndroid.SHORT)
+                }
           })
           .catch((error) => {
             console.warn(error);
@@ -94,10 +96,19 @@ export default class SignUpPage extends Component {
                           <Image source={userIcon} resizeMode="contain" style={styles.icon}/>
                       </View>
 
-                  <TextInput  style={styles.input} placeholder="" onChangeText={(userName) => this.setState({userName})} underlineColorAndroid="transparent"/>
+                  <TextInput  style={styles.input} placeholder="Username" onChangeText={(userName) => this.setState({userName})} underlineColorAndroid="transparent"/>
                         </View>
 
- 
+                  <View style={styles.inputWrap}>
+
+                    <View style={styles.iconWrap}>
+                    <Image source={lockIcon} resizeMode="contain" style={styles.icon}/>
+                      </View>
+
+
+                      <TextInput style={styles.input} placeholder="Password"  secureTextEntry={true}  onChangeText={(password) => this.setState({password})} underlineColorAndroid="transparent"/>
+                      </View>
+
                             <View style={styles.inputWrap}>
 
                     <View style={styles.iconWrap}>
@@ -105,7 +116,7 @@ export default class SignUpPage extends Component {
                       </View>
 
 
-                      <TextInput style={styles.input} placeholder=""   onChangeText={(phoneNumber) => this.setState({phoneNumber})} underlineColorAndroid="transparent"/>
+                      <TextInput style={styles.input} placeholder="Confirm Password"  secureTextEntry={true}  onChangeText={(confirmPassword) => this.setState({confirmPassword})} underlineColorAndroid="transparent"/>
                       </View>
        
         <TouchableOpacity activeOpacity={.5} onPress={this._onPressLogin.bind(this)} keyboardShouldPersistTaps={true}>
@@ -152,7 +163,7 @@ const styles = StyleSheet.create({
   inputWrap:{
       flexDirection:"row",
       marginVertical: 5,
-      height:34,
+      height:36,
       backgroundColor:"transparent",
   },
   input:{

@@ -21,12 +21,12 @@ import {
 import {
   StackNavigator,
 } from 'react-navigation';
-
+const BASE_URL = "http://ec2-52-27-149-161.us-west-2.compute.amazonaws.com";
 
 const background = require('./background.png') ;
 const lockIcon = require('./ic_lock.png');
 const userIcon = require('./ic_user.png');
- 
+ var STORAGE_KEY = 'key_access_token';
 export default class LoginPage extends Component {
   constructor(props) {
     super(props);
@@ -37,10 +37,20 @@ export default class LoginPage extends Component {
     };
   }
   componentWillMount() {
-        console.log("componentWillMount");
+       var access_token = null;
+                  try {
+                       access_token=       AsyncStorage.getItem(STORAGE_KEY);
+                            } catch (error) {
+                              console.log('AsyncStorage error: ' + error.message);
+                            }
+
+                            if(access_token !=null){
+   var { navigate } = this.props.navigation;
+      navigate('MainPage');
+}
     }
   _onPressLogin (event) {
-    let token_url =  "http://ec2-52-27-149-161.us-west-2.compute.amazonaws.com/oauth2/token";
+      let serviceUrl =  BASE_URL + "/oauth2/token";
       let userName = this.state.userName;
       let password = this.state.password;
       var access_token = '';
@@ -48,7 +58,7 @@ export default class LoginPage extends Component {
 
       let postData = "grant_type=password&username=" + userName + "&password=" + password;              
 
-        fetch(token_url,{
+        fetch(serviceUrl,{
           method: "POST",
           
         headers: {
@@ -63,10 +73,21 @@ export default class LoginPage extends Component {
           .then((response) => response.json())
           .then((responseJSON) => {  
                
-
+ var { navigate } = this.props.navigation;
                access_token = responseJSON.access_token; 
-               console.log(access_token);
-               Alert.alert('Hello !' + userName + ' ' + password + access_token);
+               if(access_token !=undefined){
+                          try {
+                              AsyncStorage.setItem(STORAGE_KEY, access_token);
+                            } catch (error) {
+                              console.log('AsyncStorage error: ' + error.message);
+                            }
+
+                  navigate('MainPage');
+               }
+               else{
+                  Alert.alert('Login failure');
+               }
+               
           })
           .catch((error) => {
             console.warn(error);
@@ -94,7 +115,7 @@ export default class LoginPage extends Component {
                           <Image source={userIcon} resizeMode="contain" style={styles.icon}/>
                       </View>
 
-                  <TextInput  style={styles.input} placeholder="" onChangeText={(userName) => this.setState({userName})} underlineColorAndroid="transparent"/>
+                  <TextInput  style={styles.input} placeholder="Username" onChangeText={(userName) => this.setState({userName})} underlineColorAndroid="transparent"/>
                         </View>
 
  
@@ -105,7 +126,7 @@ export default class LoginPage extends Component {
                       </View>
 
 
-                      <TextInput style={styles.input} placeholder="" secureTextEntry={true}  onChangeText={(password) => this.setState({password})} underlineColorAndroid="transparent"/>
+                      <TextInput style={styles.input} placeholder="Password" secureTextEntry={true}  onChangeText={(password) => this.setState({password})} underlineColorAndroid="transparent"/>
                       </View>
        
         <TouchableOpacity activeOpacity={.5} onPress={this._onPressLogin.bind(this)} keyboardShouldPersistTaps={true}>
@@ -160,7 +181,7 @@ const styles = StyleSheet.create({
   inputWrap:{
       flexDirection:"row",
       marginVertical: 5,
-      height:34,
+      height:36,
       backgroundColor:"transparent",
   },
   input:{
