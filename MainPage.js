@@ -30,6 +30,7 @@ export default class MainPage extends Component {
     this.state = {
       quote: 'Cuộc sống không bao giờ là bế tắc thực sự nếu con người ta dám rời bỏ lối mòn & dũng cảm tìm ra giá trị mới.',
       author: 'Khuyết danh',
+      username: '',
     };
   }
   
@@ -40,6 +41,10 @@ export default class MainPage extends Component {
         if(userData ==undefined){
               var { navigate } = this.props.navigation;
               navigate('LoginPage');
+        }else{
+          this.setState({
+            username: userData.userName,
+          });
         }
 this._onChangeText();
     });
@@ -117,7 +122,7 @@ AsyncStorage.removeItem(STORAGE_KEY);
    <View style={styles.footer}>
         <TouchableOpacity activeOpacity={.5} onPress={this._onPressLogOut.bind(this)} keyboardShouldPersistTaps={true}>
     <View style={styles.button}>
-<Text style={styles.buttonText}> Logout</Text>
+<Text style={styles.buttonText}>Hi {this.state.username} Logout</Text>
       </View>      
       
     </TouchableOpacity> 

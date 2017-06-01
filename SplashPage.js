@@ -40,7 +40,7 @@ class SplashPage extends Component {
    var { navigate } = this.props.navigation;
     setTimeout(() => {
       navigate (pageUrl, null);
-    }, 1000);
+    }, 3000);
   }
    static navigationOptions = {
     title: 'Welcome',

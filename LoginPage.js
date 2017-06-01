@@ -57,15 +57,12 @@ componentWillMount() {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
-      body: postData
-
-
-
+              body: postData
         })
           .then((response) => response.json())
           .then((responseJSON) => {  
                 
- var { navigate } = this.props.navigation;
+              var { navigate } = this.props.navigation;
                access_token = responseJSON.access_token; 
                if(access_token !=undefined){
                           try {
@@ -144,16 +141,9 @@ componentWillMount() {
     </TouchableOpacity>
 
           </View>                        
-
-      
-
-   
-              
+ 
         <View style={styles.container}/>
-
-       
-        
-     
+ 
       </Image>
     );
   }
